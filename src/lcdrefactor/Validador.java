@@ -28,9 +28,13 @@ public class Validador {
     }
     public void validarDatosDeEntrada(ArrayList<String> datosDeEntrada) {
         for (String datoDeEntrada : datosDeEntrada) {
-            contieneComa(datoDeEntrada);
-            contieneSoloUnaComa(datoDeEntrada);
-            validarParametrosDeEntrada(datoDeEntrada);
+            try {
+                contieneComa(datoDeEntrada);
+                contieneSoloUnaComa(datoDeEntrada);
+                validarParametrosDeEntrada(datoDeEntrada);
+            } catch (Exception error){
+                stackDeErrores.add(error.getMessage());
+            }
         }
         if (!stackDeErrores.isEmpty()) {
             imprimirErrores();
@@ -39,10 +43,11 @@ public class Validador {
     }
     
     public void validarCantidadDeEspaciosEntreDigitos(String espaciosEntreDigitos) {
-        esNumerico(espaciosEntreDigitos);
-        validarRangoDeEspacioEntreDigitos(espaciosEntreDigitos);        
-        if (!stackDeErrores.isEmpty()) {
-            imprimirErrores();
+        try {
+            esNumerico(espaciosEntreDigitos);
+            validarRangoDeEspacioEntreDigitos(espaciosEntreDigitos);        
+        } catch(Exception error){
+            System.out.println(error.getMessage());
             System.exit(0);
         }
     }
@@ -58,8 +63,7 @@ public class Validador {
     
     private void contieneComa(String cadena){
         if (!cadena.contains(",")) {
-            String error = "Cadena " + cadena + " no contiene caracter ,";
-            stackDeErrores.add(error);
+            throw new IllegalArgumentException("Cadena " + cadena + " no contiene caracter ,");
         }
     }
     
@@ -68,8 +72,7 @@ public class Validador {
         int longitudSinComas = cadena.replace(",", "").length();
         int numeroDeOcurrencias = longitudOriginal - longitudSinComas;
         if (numeroDeOcurrencias > 1) {
-            String error = "Cadena " + cadena + " contiene mas caracter ,";
-            stackDeErrores.add(error);
+            throw new IllegalArgumentException("Cadena " + cadena + " contiene mas caracter ,");
         }
     }
     
@@ -77,8 +80,7 @@ public class Validador {
         try {
             Integer.parseInt(cadena);
         } catch (NumberFormatException ex) {
-            String error = "Cadena " + cadena + " no es un entero";
-            stackDeErrores.add(error);
+            throw new IllegalArgumentException("Cadena " + cadena + " no es un entero");
         }
     }
     
@@ -86,8 +88,7 @@ public class Validador {
         int valorEspacioEntreDigitos = Integer.parseInt(espaciosEntreDigitos);
         if (valorEspacioEntreDigitos < this.MINIMO_VALOR_ESPACIO_ENTRE_DIGITOS || 
             valorEspacioEntreDigitos > this.MAXIMO_VALOR_ESPACIO_ENTRE_DIGITOS) {
-            String error = "El espacio entre digitos debe estar entre 0 y 5";
-            stackDeErrores.add(error);
+            throw new IllegalArgumentException("El espacio entre digitos debe estar entre 0 y 5");
         }
     }
     
@@ -95,8 +96,7 @@ public class Validador {
         int valorTamanno = Integer.parseInt(tamanno);
         if (valorTamanno < this.MINIMO_VALOR_TAMANNO || 
             valorTamanno > this.MAXIMO_VALOR_TAMANNO) {
-            String error = "El parametro size ["+ tamanno + "] debe estar entre 1 y 10";
-            stackDeErrores.add(error);
+            throw new IllegalArgumentException("El parametro size ["+ tamanno + "] debe estar entre 1 y 10");
         }
     }
     
@@ -105,8 +105,7 @@ public class Validador {
         for (char caracter : caracteres) {
             if( ! Character.isDigit(caracter))
             {
-                String error = "Caracter " + caracter + " no es un digito";
-                stackDeErrores.add(error);
+                throw new IllegalArgumentException("Caracter " + caracter + " no es un digito");
             }
         }
     }
